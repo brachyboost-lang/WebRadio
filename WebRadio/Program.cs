@@ -10,12 +10,14 @@ namespace WebRadio
         static void Main(string[] args)
         {
             var client1 = new RestClient("https://de1.api.radio-browser.info/");
-            var request = new RestRequest("json/stations/", Method.Get);
+            var request = new RestRequest("json/stations/byname/", Method.Get);
             var response = client1.Post(request);
-            Console.WriteLine(response.StatusCode);
-            Console.WriteLine(response.Content);
+            var result = JsonDocument.Parse(response.Content);
 
-
+            foreach (var station in result.RootElement.EnumerateArray())
+            {
+                Console.WriteLine($"Name: {station.GetProperty("name").GetString()} Url: {station.GetProperty("url").GetString()}");
+            }
 
             //var client = new RestClient("http://streamer.psyradio.org:8010/;listen.mp3");
             //var request = new RestRequest("");
